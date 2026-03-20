@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body  { font-family: Arial, sans-serif; padding: 20px; }
+        h1    { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+        .date { background: #e8f5e9; padding: 10px; border-radius: 5px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th    { background-color: #4CAF50; color: white; padding: 10px; text-align: left; }
+        td    { padding: 10px; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+    <h1>Resource Utilisation Report</h1>
+
+    <div class="date">
+        <b>From : </b> {{ from_date }} &nbsp;&nbsp;
+        <b>To   : </b> {{ to_date }}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Resource Name</th>
+                <th>Resource Type</th>
+                <th>Times Used</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ row.resource_name }}</td>
+                <td>{{ row.resource_type }}</td>
+                <td>{{ row.times_used }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
