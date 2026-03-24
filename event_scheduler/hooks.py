@@ -247,3 +247,11 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+scheduler_events={
+    "cron":{
+        "* * * * *":[
+            "event_scheduler.eventmanagement.auto_cancel_events.auto_cancel_expired_events"
+        ]
+    }
+}
