@@ -1,0 +1,58 @@
+{
+ "charts": [
+  {
+   "chart_name": "Resource utilization",
+   "label": "Resource utilization"
+  }
+ ],
+ "content": "[{\"id\":\"k3mevu6X1t\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">EventResourceManagement</span>\",\"col\":12}},{\"id\":\"IJIEfwqVO0\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Resource utilization\",\"col\":12}},{\"id\":\"UbKeiUFT7S\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Resource Utilisation\",\"col\":3}},{\"id\":\"UFlONTMuc3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Resource\",\"col\":3}},{\"id\":\"-4JXv6gWDZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Events\",\"col\":3}}]",
+ "creation": "2026-03-25 11:09:05.636934",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "stock",
+ "idx": 0,
+ "indicator_color": "grey",
+ "is_hidden": 0,
+ "label": "EventResourceManagement",
+ "links": [],
+ "modified": "2026-03-30 11:51:27.441091",
+ "modified_by": "Administrator",
+ "module": "EventManagement",
+ "name": "EventResourceManagement",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 28.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Resource",
+   "link_to": "Resource",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Resource Utilisation",
+   "link_to": "Resource Utilisation",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Events",
+   "link_to": "Events",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "EventResourceManagement"
+}

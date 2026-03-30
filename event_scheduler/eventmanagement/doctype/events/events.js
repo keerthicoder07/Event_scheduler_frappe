@@ -1,20 +1,14 @@
 frappe.ui.form.on('Events', {
 
     refresh(frm) {
-        format_datetime_fields(frm);
-
-        frappe.realtime.on("event_auto_cancelled",function(data)
-        {
-            frappe.show_alert(
-                {
-                    message:data.message,
-                    indicator:"orange"
-                },7
-                
-            );
+        // ✅ Only auto cancel needs realtime
+        frappe.realtime.on("event_auto_cancelled", function(data) {
+            frappe.show_alert({
+                message:   data.message,
+                indicator: "orange"
+            }, 7);
             frm.reload_doc();
-        }
-    );
+        });
     },
 
     onload_post_render(frm) {
@@ -22,6 +16,7 @@ frappe.ui.form.on('Events', {
     },
 
     start_time(frm) {
+        calculate_end_time(frm);
         format_datetime_fields(frm);
     },
 
@@ -29,37 +24,41 @@ frappe.ui.form.on('Events', {
         calculate_end_time(frm);
     },
 
+    end_time(frm) {
+        format_datetime_fields(frm);
+    },
+
 });
 
-function calculate_end_time(frm)
-{
-    if(frm.doc.start_time && frm.doc.total_hours)
-    {
-        let total_min=frm.doc.total_hours*60
-        let end_time=moment(frm.doc.start_time).add(total_min,"minutes").format("YYYY-MM-DD HH:mm:ss")
-        frm.set_value("end_time",end_time);
+
+function calculate_end_time(frm) {
+    if (frm.doc.start_time && frm.doc.total_hours) {
+        let duration_minutes = frm.doc.total_hours * 60;
+        let end_time = moment(frm.doc.start_time)
+                        .add(duration_minutes, "minutes")
+                        .format("YYYY-MM-DD HH:mm:ss");
+        frm.set_value("end_time", end_time);
         format_datetime_fields(frm);
     }
 }
+
+
 function format_datetime_fields(frm) {
-
-    if (frm.doc.start_time) {
-        let pretty_start = moment(frm.doc.start_time)
-                            .format("DD MMM YYYY hh:mm A");
-
-        // ✅ Directly set the input display value
+    if (frm.doc.start_time
+        && frm.fields_dict.start_time
+        && frm.fields_dict.start_time.$input) {
         frm.fields_dict["start_time"]
             .$input
-            .val(pretty_start);
+            .val(moment(frm.doc.start_time)
+            .format("DD MMM YYYY hh:mm A"));
     }
 
-    if (frm.doc.end_time) {
-        let pretty_end = moment(frm.doc.end_time)
-                          .format("DD MMM YYYY hh:mm A");
-
-        // ✅ Directly set the input display value
+    if (frm.doc.end_time
+        && frm.fields_dict.end_time
+        && frm.fields_dict.end_time.$input) {
         frm.fields_dict["end_time"]
             .$input
-            .val(pretty_end);
+            .val(moment(frm.doc.end_time)
+            .format("DD MMM YYYY hh:mm A"));
     }
 }

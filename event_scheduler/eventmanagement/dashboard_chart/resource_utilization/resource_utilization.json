@@ -1,0 +1,35 @@
+{
+ "chart_name": "Resource utilization",
+ "chart_type": "Report",
+ "creation": "2026-03-25 17:16:54.715524",
+ "currency": "",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2026-03-25 17:19:50.269487",
+ "modified_by": "Administrator",
+ "module": "EventManagement",
+ "name": "Resource utilization",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Resource utilisation",
+ "roles": [],
+ "show_values_over_chart": 0,
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "resource_name",
+ "y_axis": [
+  {
+   "color": "#fa0c0c",
+   "y_field": "total_hours"
+  }
+ ]
+}

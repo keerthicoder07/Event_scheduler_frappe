@@ -3,7 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import getdate,format_datetime
+from frappe.utils import getdate,format_datetime,get_datetime
+from frappe.query_builder import DocType
 
 class Events(Document):
 	def before_save(self):
@@ -15,15 +16,17 @@ class Events(Document):
 		self.validate_resource_conflicts()
 	def on_submit(self):
 		
-		self.update_resource_status("Booked")
 		frappe.msgprint("Event fixed succesfully")
 	def on_cancel(self):
-		self.update_resource_status("Available")
 		frappe.msgprint("Event completed and resource is free")
 
 
 	#Logic Functions
 	def validate_time(self):
+		if not self.start_time:
+			frappe.throw("Start Time is required")
+		if not self.total_hours:
+			frappe.throw("Total Hours is required")
 		if(self.total_hours<=0):
 			frappe.throw("Total hours must be grater than 0")
 		
@@ -37,49 +40,41 @@ class Events(Document):
 					f"Resource <b>{res.resource}</b> "
 					f"is added more than once!")
 			seen_resources.append(res.resource)
+		ERA=DocType("Event Resource Allocation")
+		Event=DocType("Events")
 		for row in self.resources:
-			resource_data = frappe.db.get_value(
-        "Resource",
-        row.resource,
-        ["status", "end_time", "event"],
-        as_dict=True
-    )
-
-			if resource_data.status == "Booked":
+			conflicts=(
+				frappe.qb.from_(ERA)
+				.join(Event)
+				.on(Event.name==ERA.parent)
+				.select(
+					Event.name,
+					Event.title,
+					Event.start_time,
+					Event.end_time,
+					ERA.resource
+				)
+				.where(
+					(ERA.resource==row.resource)&(Event.name!=(self.name or "new-event"))&(Event.docstatus==1)&
+					~(
+						(Event.end_time<=self.start_time)|
+						(Event.start_time>=self.end_time)
+					)
+				)
+			).run(as_dict=True)
+			for conflict in conflicts:
 				all_conflicts.append(
-					f"Resource <b>{row.resource}</b> "
-					f"is currently <b>Booked</b> "
-					f"by Event <b>{resource_data.event}</b>!<br>"
-					f"Please try again after "
-				f"<b>{format_datetime(resource_data.end_time, 'dd MMM yyyy hh:mm a')}</b>"
-			)
-
-		# ✅ Show ALL booked resources at once
+					f"Resource <b>{conflict['resource']}</b>"
+					f"is already booked in <b>{conflict['title']}</b>"
+					f"Try again after <b>{format_datetime(conflict['end_time'],'dd MMM YYYY hh:mm a')}</b>"
+				)
 		if all_conflicts:
-			conflict_message = "<br><br>".join(all_conflicts)
 			frappe.throw(
-				f"The following conflicts were found:"
-				f"<br><br>{conflict_message}"
-			)
-	def update_resource_status(self,status):
-		for row in self.resources:
-			if frappe.db.exists("Resource",row.resource):
-				frappe.db.sql("""
-					update `tabResource`
-					set status=%(status)s,end_time=%(end_time)s,event=%(event)s
-					where name=%(resource)s
-				""",
-				{
-					"status":status,
-					"end_time":self.end_time,
-					"event":self.name,
-					"resource":row.resource,
-				}
+				"The following conflicts were found:"
+				"<br><br>"+"<br><br>".join(all_conflicts)
 				)
-			else:
-				frappe.msgprint(
-					f"Resource <b>{row.resource}</b> not found"
-				)
+		#frappe.msgprint(str(all_conflicts))
+
 	
 	def calculate_end_time(self):
 		if self.start_time and self.total_hours:
@@ -89,7 +84,7 @@ class Events(Document):
 
 			# Calculate end time
 			if isinstance(self.start_time, str):
-				from frappe.utils import get_datetime
+				
 				start = get_datetime(self.start_time)
 			else:
 				start = self.start_time
