@@ -56,9 +56,8 @@ class Events(Document):
 				)
 				.where(
 					(ERA.resource==row.resource)&(Event.name!=(self.name or "new-event"))&(Event.docstatus==1)&
-					~(
-						(Event.end_time<=self.start_time)|
-						(Event.start_time>=self.end_time)
+					(
+						(Event.end_time>=self.start_time)&(Event.start_time<=self.end_time)
 					)
 				)
 			).run(as_dict=True)
